@@ -10,7 +10,10 @@
 int main() {
   int *numPtr = new int;
 
+  // new int will create a segment in heap memory, display
+  // contents of the dereferenced pointer
   std::cout << "*numPtr: " << *numPtr << std::endl;
+  //will print out the value 
   std::cout << " numPtr: " <<  numPtr << std::endl;
   std::cout << "&numPtr: " << &numPtr << std::endl;
 
