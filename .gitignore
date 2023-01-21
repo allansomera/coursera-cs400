@@ -6,6 +6,7 @@
 **/main
 **/addressOf
 **/foo
+**/puzzle[0-9]*
 **/puzzle
 **/heap1
 **/heap2
