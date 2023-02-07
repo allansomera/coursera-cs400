@@ -10,7 +10,8 @@ using uiuc::Cube;
 
 Cube foo() {
   Cube c;
-  return c;
+  return c; // when it returns, it needs to call the copy constructor to send
+  // it back to main
 }
 
 int main() {
