@@ -10,3 +10,6 @@
 **/puzzle
 **/heap1
 **/heap2
+**/byPointer
+**/byRef
+**/byValue
