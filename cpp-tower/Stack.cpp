@@ -30,7 +30,7 @@ Cube Stack::removeTop() {
   cubes_.pop_back();
   return cube;
 }
-
+// return by reference, assumes that cubes_ has already been initialized
 Cube & Stack::peekTop() {
   return cubes_[cubes_.size() - 1];
 }
