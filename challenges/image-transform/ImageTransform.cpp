@@ -7,15 +7,15 @@
 #include "ImageTransform.h"
 
 /* ******************
-(Begin multi-line comment...)
+   (Begin multi-line comment...)
 
-Write your name and email address in the comment space here:
+   Write your name and email address in the comment space here:
 
 Name:
 Email:
 
 (...end multi-line comment.)
-******************** */
+ ******************** */
 
 using uiuc::PNG;
 using uiuc::HSLAPixel;
@@ -27,21 +27,25 @@ using uiuc::HSLAPixel;
  *
  * @return The grayscale image.
  */
+
+const double ILLINI_BLUE = 216.0;
+const double ILLINI_ORANGE = 11.0;
+
 PNG grayscale(PNG image) {
-  /// This function is already written for you so you can see how to
-  /// interact with our PNG class.
-  for (unsigned x = 0; x < image.width(); x++) {
-    for (unsigned y = 0; y < image.height(); y++) {
-      HSLAPixel & pixel = image.getPixel(x, y);
+    /// This function is already written for you so you can see how to
+    /// interact with our PNG class.
+    for (unsigned x = 0; x < image.width(); x++) {
+        for (unsigned y = 0; y < image.height(); y++) {
+            HSLAPixel & pixel = image.getPixel(x, y);
 
-      // `pixel` is a reference to the memory stored inside of the PNG `image`,
-      // which means you're changing the image directly. No need to `set`
-      // the pixel since you're directly changing the memory of the image.
-      pixel.s = 0;
+            // `pixel` is a reference to the memory stored inside of the PNG `image`,
+            // which means you're changing the image directly. No need to `set`
+            // the pixel since you're directly changing the memory of the image.
+            pixel.s = 0;
+        }
     }
-  }
 
-  return image;
+    return image;
 }
 
 
@@ -68,10 +72,9 @@ PNG grayscale(PNG image) {
  */
 PNG createSpotlight(PNG image, int centerX, int centerY) {
 
-  return image;
-  
+    return image;
 }
- 
+
 
 /**
  * Returns a image transformed to Illini colors.
@@ -82,26 +85,60 @@ PNG createSpotlight(PNG image, int centerX, int centerY) {
  * @param image A PNG object which holds the image data to be modified.
  *
  * @return The illinify'd image.
-**/
+ **/
 PNG illinify(PNG image) {
 
-  return image;
+
+    for (unsigned x = 0; x < image.width(); x++) {
+        for (unsigned y = 0; y < image.height(); y++) {
+            HSLAPixel & pixel = image.getPixel(x, y);
+            // `pixel` is a reference to the memory stored inside of the PNG `image`,
+            // which means you're changing the image directly. No need to `set`
+            // the pixel since you're directly changing the memory of the image.
+            double hue = pixel.h;
+            // take the short way round in the circle
+            double f_oj = (double)min(abs(hue - ILLINI_ORANGE), 360 - abs(hue - ILLINI_ORANGE)); 
+            double f_blue = (double)min(abs(hue - ILLINI_BLUE), 360 - abs(hue- ILLINI_BLUE)); 
+            // if(f_oj < f_blue)
+            //     pixel.h = ILLINI_ORANGE;
+            // else
+            //     pixel.h = ILLINI_BLUE;
+            pixel.h = (f_oj < f_blue ) ? ILLINI_ORANGE : ILLINI_BLUE;
+        }
+    }
+
+    return image;
 }
- 
+
 
 /**
-* Returns an immge that has been watermarked by another image.
-*
-* The luminance of every pixel of the second image is checked, if that
-* pixel's luminance is 1 (100%), then the pixel at the same location on
-* the first image has its luminance increased by 0.2.
-*
-* @param firstImage  The first of the two PNGs, which is the base image.
-* @param secondImage The second of the two PNGs, which acts as the stencil.
-*
-* @return The watermarked image.
-*/
+ * Returns an immge that has been watermarked by another image.
+ *
+ * The luminance of every pixel of the second image is checked, if that
+ * pixel's luminance is 1 (100%), then the pixel at the same location on
+ * the first image has its luminance increased by 0.2.
+ *
+ * @param firstImage  The first of the two PNGs, which is the base image.
+ * @param secondImage The second of the two PNGs, which acts as the stencil.
+ *
+ * @return The watermarked image.
+ */
 PNG watermark(PNG firstImage, PNG secondImage) {
+    
+    for (unsigned x = 0; x < secondImage.width(); x++) {
+        for (unsigned y = 0; y < secondImage.height(); y++) {
+            HSLAPixel & base_img_pixel = firstImage.getPixel(x, y);
+            HSLAPixel & stencil_img_pixel = secondImage.getPixel(x, y);
+            double lum = base_img_pixel.l;
+            if(stencil_img_pixel.l == 1.0){
+                double check_lum = lum + 0.2;
+                if(check_lum >= 1.0)
+                    base_img_pixel.l = 1.0;
+                else
+                    base_img_pixel.l += 0.2;
+            }
+        }
+    }
 
-  return firstImage;
+    return firstImage;
 }
