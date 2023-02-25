@@ -31,6 +31,15 @@ using uiuc::HSLAPixel;
 const double ILLINI_BLUE = 216.0;
 const double ILLINI_ORANGE = 11.0;
 
+int exponentiation(int a,int b) {
+    if (b == 1)
+        return a;
+    if ( b % 2 == 1)
+        return a * exponentiation(a, b - 1);
+    int tmp_exp = exponentiation(a, b / 2);
+    return tmp_exp * tmp_exp;
+}
+
 PNG grayscale(PNG image) {
     /// This function is already written for you so you can see how to
     /// interact with our PNG class.
@@ -71,6 +80,43 @@ PNG grayscale(PNG image) {
  * @return The image with a spotlight.
  */
 PNG createSpotlight(PNG image, int centerX, int centerY) {
+    for (unsigned x = 0; x < image.width(); x++) {
+        for (unsigned y = 0; y < image.height(); y++) {
+            HSLAPixel & pixel = image.getPixel(x, y);
+            int x_2 = abs(int(centerX - x));
+            int y_2 = abs(int(centerY - y));
+            // cout << "x: " << x << endl;
+            // cout << "y: " << y << endl;
+            // cout << "x_2: " << x_2 << endl;
+            // cout << "y_2: " << y_2 << endl;
+            // double pow_x = (double)x_2 * x_2;
+            // double pow_y = (double)y_2 * y_2;
+            // double pow_x = pow(x_2,2);
+            // double pow_x = pow(x_2,2);
+            // int pow_x = exponentiation(x_2,2);
+            // int pow_y = exponentiation(y_2,2);
+            int pow_x = pow(x_2,2);
+            int pow_y = pow(y_2,2);
+            // cout << "pow_x: " << pow_x << endl;
+            // cout << "pow_y: " << pow_y << endl;
+            double distance = (double)sqrt((pow_x)+(pow_y));
+            // cout << x_2 << "^2 - " << y_2 << "^2" << " = " << distance << endl;;
+            // cout << "(" << centerX << " - " << x << ")^2 + " << "(" << centerY 
+            //     << " - " << y << ")^2 = " << distance <<  endl;
+            double per_dec = (double)(distance * 0.005);
+            double per_inv = (double)1.000 - per_dec;
+            // cout << "distance: " << distance << endl;
+            // cout << "per_dec: " << per_dec << endl;
+            // cout << "per_inv: " << per_inv << endl;
+            if(distance > 160){
+                pixel.l *= 0.2;
+                // cout << "over 160px: pixel.l -> " << pixel.l << endl;
+            }else{
+                pixel.l *= per_inv;
+                // cout << "pixel.l *= per_inv -> " << pixel.l << endl; 
+            }
+        }
+    }
 
     return image;
 }
